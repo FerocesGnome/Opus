@@ -2,24 +2,28 @@
 using namespace std;
 /* Напишите программу находящую в двумерном массиве элементы
 значения которых ровно втрое больше суммы индексов этого элемента.
-В этой задаче массив неравномерен по ширине, т.е. размеры 
+В этой задаче массив неравномерен по ширине, т.е. размеры
 подмассивов могут отличаться. Способ ввода остается на ваше усмотрение. */
 int main(){
-int lenght_x, lenght_y;
-cin >> lenght_x >> lenght_y;
-int** Array = new int*[lenght_y];
-   for (int i = 1; i <= lenght_y; i++) {
-      Array[i] = new int[lenght_x];
+int x, y;
+cout << "Enter the number of columns(x): " << endl;
+cin >> x;
+cout << "Enter the number of rows(y): " << endl;
+cin >> y;
+int** A = new int*[y];
+   for (int i = 1; i <= y; i++) {
+      A[i] = new int[x];
    }
-   for (int i = 1; i <= lenght_y; i++) {
-      for (int j = 1; j <= lenght_x; j++) {
-         cin >> Array[i][j];
+   for (int i = 1; i <= y; i++) {
+      for (int j = 1; j <= x; j++) {
+         cout << "Enter the number: " << "[" << i << "]" << "[" << j << "]";
+         cin >> A[i][j];
       }
    }
-   for (int i = 1; i <= lenght_y; i++) {
-      for (int j = 1; j <= lenght_x; j++) {
-         if (Array[i][j] == 3*(i + j)){
-            cout << Array[i][j] << " ";
+   for (int i = 1; i <= y; i++) {
+      for (int j = 1; j <= x; j++) {
+         if (A[i][j] == 3*(i + j)){
+            cout << A[i][j] << " ";
          }
       }
    }
