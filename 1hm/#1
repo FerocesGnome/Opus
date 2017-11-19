@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std;
+int main() {
+/* Напишите программу проверяющую N чисел на четность.
+В программе гарантируется, что все числа целые и их не менее одного. */
+int n;
+cin >> n;
+   for (int i = 0; i < n; i++){
+      int a;
+      cin >> a ;
+      if (a % 2 == 0) {
+         cout << a << ": Odd ";
+      } else {
+         cout << a << ": Even ";
+      }
+   }
+return 0;
+}
