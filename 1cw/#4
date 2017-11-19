@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+/* Напишите программу находящую в двумерном массиве элементы
+значения которых ровно втрое больше суммы индексов этого элемента.
+В этой задаче массив неравномерен по ширине, т.е. размеры 
+подмассивов могут отличаться. Способ ввода остается на ваше усмотрение. */
+int main(){
+int lenght_x, lenght_y;
+cin >> lenght_x >> lenght_y;
+int** Array = new int*[lenght_y];
+   for (int i = 1; i <= lenght_y; i++) {
+      Array[i] = new int[lenght_x];
+   }
+   for (int i = 1; i <= lenght_y; i++) {
+      for (int j = 1; j <= lenght_x; j++) {
+         cin >> Array[i][j];
+      }
+   }
+   for (int i = 1; i <= lenght_y; i++) {
+      for (int j = 1; j <= lenght_x; j++) {
+         if (Array[i][j] == 3*(i + j)){
+            cout << Array[i][j] << " ";
+         }
+      }
+   }
+return 0;
+}
