@@ -1,0 +1,20 @@
+#include <iostream>
+/* Напишите программу, которая подсчитывает,
+сколько раз в строке встретился символ ‘w’. */
+/* Если не известно количество вводимых элементов
+не известно. Катя мне слегка помогла. */
+using namespace std;
+int main(int argc, char *argv[]){
+cout << "Enter string: ";
+char str;
+str = cin.get();
+int a = 0;
+   do {
+          if( str == 'w'){
+             a = a + 1;
+          };
+       str = cin.get();
+   } while( str != '\n');
+cout << "number w: " << a << endl;
+return 0;
+}
