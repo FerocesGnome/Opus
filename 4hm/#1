@@ -1,5 +1,7 @@
 #include <iostream>
 using namespace std;
+/* Напишите программу, которая удаляет из массива все
+простые числа встречающиеся больше одного раза. */
 bool prime(int x){
 if (x == 0) return 0;
 if (x == 1) return 0;
@@ -13,9 +15,9 @@ int main() {
 int n;
 cout << "Enter the number of items: ";
 cin >> n;
-int *A = new int[n+1];
-int *B = new int[n+1];
-int *C = new int[n+1];
+int *A = new int[n];
+int *B = new int[n];
+int *C = new int[n];
    for(int i = 0; i < n; ++i){
       cout << "input A[" << i+1 << "]:";
       cin >> A[i];
@@ -44,7 +46,7 @@ int size_C = 0;
          }
    }
    for (int i = 0; i < size_C; i++){
-      cout << "C[" << i+1 << "]:" << C[i] << endl;
+      cout << C[i] << " ";
    }
 return 0;
 }
