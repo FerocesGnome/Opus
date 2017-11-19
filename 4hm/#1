@@ -1,0 +1,50 @@
+#include <iostream>
+using namespace std;
+bool prime(int x){
+if (x == 0) return 0;
+if (x == 1) return 0;
+if (x == 2) return 1;
+   for( long i = 3; i <= x / 2; i++){
+      if( x % i == 0) return 0;
+      else return 1;
+   }
+}
+int main() {
+int n;
+cout << "Enter the number of items: ";
+cin >> n;
+int *A = new int[n+1];
+int *B = new int[n+1];
+int *C = new int[n+1];
+   for(int i = 0; i < n; ++i){
+      cout << "input A[" << i+1 << "]:";
+      cin >> A[i];
+   }
+int size_A = n;
+int size_B = 0;
+int size_C = 0;
+   for(int i = 0; i < n; i++){
+      for(int j = 0; j < i; j++){
+         if((A[i] == A[j]) && (prime(A[i])) == 1){
+            B[size_B] = A[i];
+            size_B++;
+         }
+      }
+   }
+   for(int i = 0; i < size_A; i++){
+      bool hellish_C = 0;
+         for(int j = 0; j < size_B; ++j){
+            if(A[i] == B[j]) {
+               hellish_C = 1;
+            }
+         }
+         if(hellish_C != 1){
+            C[size_C] = A[i];
+            size_C++;
+         }
+   }
+   for (int i = 0; i < size_C; i++){
+      cout << "C[" << i+1 << "]:" << C[i] << endl;
+   }
+return 0;
+}
