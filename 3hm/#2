@@ -1,0 +1,178 @@
+#include <iostream>
+using namespace std;
+/* Напишите программу для работы с оценками за сессию студентов.
+В программе должна присутствовать структура хранящая ФИО,
+оценки за 6 экзаменов для каждого ученика и умеющая
+(соответствующими методами) вычислять средний балл студента,
+наличие стипендии(стипендия начисляется закрывшим сессию без троек),
+задолженностей (сессия считается закрытой без долгов,
+если все оценки выше 2) в программе должны быть функции для
+работы с массивом студентов находящие средний балл
+(всех без двух лучших и двух худших), количества стипендиатов,
+должников и отчисленных(более двух долгов) */
+/* Нахождение среднего балла с условием работает некорректно. */
+struct data{   // начало структуры
+char name [30];
+char surname [30];
+char patronymic [30];
+int mark1;
+int mark2;
+int mark3;
+int mark4;
+int mark5;
+int mark6;
+float Average(int mark1, int mark2, int mark3,
+int mark4, int mark5, int mark6){
+float sred = (mark1 + mark2 + mark3 + mark4 + mark5 + mark6);
+return sred / 6;
+}
+// определение наличия стипендии
+int Scholarship(int mark1, int mark2, int mark3,
+int mark4, int mark5, int mark6){
+int z = 0;
+if (mark1 > 3 && mark2 > 3 && mark3 > 3 && mark4 > 3
+    &&  mark5 > 3 && mark6 > 3)
+   z = 0;
+else
+   z = 1;
+return z;
+}
+// определение наличия долгов
+int Debt(int mark1, int mark2, int mark3,
+int mark4, int mark5, int mark6){
+int x = 0;
+   if (mark1 == 2 || mark2 == 2 || mark3 == 2 || mark4 == 2
+   || mark5 == 2 || mark6 == 2)
+      x = 1;
+   else
+      x = 0;
+return x;
+}
+}student;   // конец структуры
+// определение среднего балла с условиями
+float Average_For_All(data student[], int n){
+float a[n];
+float max1,max2,min1,min2,avs1;
+   for (int i = 0; i < n; i++){
+      a[i] = student[i].mark1 + student[i].mark2 +
+      student[i].mark3 + student[i].mark4 +
+      student[i].mark5 + student[i].mark6;
+      a[i] = a[i] / 6;
+   }
+max1 = a[0];
+   for (int i = 0; i < n; i++){
+      if (a[i] >= max1)
+         max1 = a[i];
+   }
+max2 = a[0];
+   for (int i = 0; i < n; i++){
+      if (a[i] >= max2 && a[i] < max1)
+         max2 = a[i];
+   }
+min1 = a[0];
+   for (int i = 0; i < n; i++){
+      if (a[i] <= min1)
+         min1 = a[i];
+   }
+min2 = a[0];
+   for (int i = 0; i < n; i++){
+      if (a[i] <= min2 && a[i] > min1)
+         min2 = a[i];
+   }
+avs1 = 0;
+   for (int i=0; i<n; i++) {
+      if(a[i] != max1 || a[i] != max2 || a[i]
+         != min1 || a[i] != min2)
+         avs1 = avs1 + a[i];
+   }
+   if (n <= 4)
+      return 0;
+   else
+      return avs1 / (n - 4);
+}
+// определение количества человек со стипендией
+int With_A_Sscholarship(data student[], int n){
+int b = 0;
+   for (int i = 0; i < n; i++){
+      if (student[i].mark1 > 3 && student[i].mark2 > 3 &&
+          student[i].mark3 > 3 && student[i].mark4 > 3 &&
+          student[i].mark5 > 3 && student[i].mark6 > 3)
+         b = b + 1;
+   }
+return b;
+}
+int Debts(data student[], int n){
+int c = 0;
+   for (int i = 0; i < n; i++){
+      if (student[i].mark1 == 2 || student[i].mark2 == 2 ||
+          student[i].mark3 == 2 || student[i].mark4 == 2 ||
+          student[i].mark5 == 2 || student[i].mark6 == 2)
+         c = c + 1;
+   }
+return c;
+}
+// определение количества отчисленных
+int Expired(data student[], int n){
+int d = 0;
+   for (int i = 0; i < n; i++){
+      int f = 0;
+      if (student[i].mark1 < 3)
+         f = f + 1;
+      if (student[i].mark2 < 3)
+         f = f + 1;
+      if (student[i].mark3 < 3)
+         f = f + 1;
+      if (student[i].mark4 < 3)
+         f = f + 1;
+      if (student[i].mark5 < 3)
+         f = f + 1;
+      if (student[i].mark6 < 3)
+         f = f + 1;
+      if (f > 1)
+         d = d + 1;
+   }
+return d;
+}
+int main(){
+int n;
+cout << "Enter the number of students  " << endl;
+cin >> n;
+data student[n] = {};
+   for (int i = 0; i < n; i++){
+      cout << "Data of  " << i+1 << "  student" << endl;
+// ввод имён
+      cout << "name:  ";
+      cin >> student[i].name;
+      cout << "surname: ";
+      cin >> student[i].surname;
+      cout << "patronymic: ";
+      cin >> student[i].patronymic;
+      cout << "Marks for 6 exams:  " << " ";
+// ввод оценок
+      cin >> student[i].mark1 >> student[i].mark2 >> student[i].mark3
+          >> student[i].mark4 >> student[i].mark5 >> student[i].mark6;
+      data A;
+// вывод среднего балла, наличия/отсутствия стипендии/долгов
+      cout << A.Average(student[i].mark1, student[i].mark2, student[i].mark3,
+                        student[i].mark4, student[i].mark5, student[i].mark6) << endl;
+         if (A.Scholarship(student[i].mark1, student[i].mark2, student[i].mark3,
+                           student[i].mark4, student[i].mark5, student[i].mark6) == 1){
+            cout << "don't accrue a scholarship" << endl;
+         } else {
+              cout << "accrue a scholarship" << endl;
+           }
+         if (A.Debt(student[i].mark1, student[i].mark2, student[i].mark3,
+                    student[i].mark4, student[i].mark5, student[i].mark6) == 1){
+    cout << "student has got debts" << endl;
+         } else {
+              cout << "student has not got debts" << endl;
+           }
+   }
+/* вывод среднего балла по всем ученикам с условием,
+количества отчисленных, имеющих стипендию, ииеющих долги */
+cout << "number of expired students = " << Expired(student, n) << endl;
+cout << "average score for all but 4 = "<< Average_For_All (student, n) << endl;
+cout << "number of students with debts = " << Debts(student, n) << endl;
+cout << "number of students with a scholarship = " << With_A_Sscholarship (student, n) << endl;
+return 0;
+}
