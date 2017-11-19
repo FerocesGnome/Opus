@@ -1,0 +1,25 @@
+#include <iostream>
+#include <stdlib.h>
+/* Напишите функцию sort упорядывающую массив целых чисел и программу
+с примером её использования. В коде запрещается использовать обращения
+к массиву по индексу( Arr[i] ), т.е. нужно использовать указательную
+арифметику. Эффективность в данной программе не приоритетна.
+Количество аргументов функции не должно превышать 2. */
+int comp(const void *a, const void *b){
+return ( *(int*)a - *(int*)b );
+}
+using namespace std;
+int main(){
+int n;
+cin >> n;
+int A[n];
+for(int i=0; i<n; i++){
+cout << "input A[" << i+1 << "]:" ;
+   cin >> A[i];
+}
+qsort(A,n,sizeof(int),comp);
+for(int i=0; i<n; i++)
+	cout<<A[i]<<" ";
+  cout<<"\n";
+    return 0;
+}
