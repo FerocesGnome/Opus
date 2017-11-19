@@ -1,0 +1,38 @@
+#include <iostream>
+using namespace std;
+/* Напишите программу заполняющую двумерный массив
+размера N×N диагоналями, как показано в примере. */
+int main(){
+int N;
+cout << "Enter the size of the array (N): ";
+cin >> N;
+int **A = new int *[N];
+	for (int i = 0; i < N; i++){
+       A[i] = new int[N];
+	}
+int position_x = 0;
+int position_y = 0;
+int
+enumerator = N;
+   for (int i = N; i > 0; i--){
+	  for (int x = position_x; x < N; x++){
+		 A[position_y][x] = enumerator;
+		 enumerator--;
+  	  }
+      enumerator = N;
+      for (int y = position_y; y < N; y++){
+         A[y][position_x] = enumerator;
+         enumerator--;
+      }
+      enumerator = N;
+	  position_x++;
+      position_y++;
+   }
+   for (int i = 0; i < N; i++){
+	  for (int j = 0; j < N; j++){
+		 cout << A[i][j] << " ";
+	  }
+      cout << endl;
+   }
+return 0;
+}
