@@ -1,0 +1,39 @@
+#include <iostream>
+using namespace std;
+/* Напишите программу вычисляющую произведение двух целых чисел.
+В программе гарантируется, что числа - целые.
+В программе запрещается использовать операцию *(умножить) */
+int main()
+{int a, b, s = 0;
+cin >> a >> b;
+   if (b >= 0){
+      if ( a >= 0){
+         for (int i = 1; i <= b; i++){
+            s = s + a;
+            }
+         cout << s;
+      } else {
+           a = -a;
+           for (int i = 1; i <= b; i++){
+              s = s + a;
+              }
+           cout << -s;
+        }
+   } else {
+        if ( a <= 0){
+           b = -b;
+           a = -a;
+              for (int i = 1; i <= b; i++){
+                 s = s + a;
+                 }
+              cout << s;
+      } else {
+           b = -b;
+           for (int i = 1; i <= b; i++){
+              s = s + a;
+              }
+           cout << -s;
+        }
+     }
+return 0;
+}
