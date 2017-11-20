@@ -1,5 +1,7 @@
 #include <iostream>
 #include <math.h>
+/* Напишите программу, которая выводит все натуральные числа-палиндромы
+длины n, делящиеся на 9, в порядке возрастания. */
 using namespace std;
 bool is_palindrom(int N) {
    int a, b = 0;
