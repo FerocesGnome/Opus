@@ -1,0 +1,38 @@
+#include <iostream>
+using namespace std;
+/* Создайте рекурсивную функцию, подсчитывающую сумму
+элементов массива по следующему алгоритму: массив делится пополам,
+подсчитываются и складываются суммы элементов в каждой половине.
+Сумма элементов в половине массива подсчитывается по тому же алгоритму,
+то есть снова путем деления пополам. Деления происходят,
+пока в получившихся кусках массива не окажется по одному элементу
+и вычисление суммы, соответственно, не станет тривиальным. */
+int strange_sum(int* A0, int n){
+   if(n == 1){
+      return A0[0];
+   } else {
+        int h = n / 2;
+        int *A1 = new int [h];
+           for(int i = 0; i < h; i++){
+              A1[i] = A0[i];
+           };
+        int k  = n - n / 2;
+        int *A2 = new int [k];
+           for(int i = 0; i < k; i++){
+              A2[i] = A0[i + k];
+           };
+      return strange_sum(A1, h) + strange_sum(A2, k);
+      };
+}
+int main(){
+int n;
+cout << "Enter the length of the array: " << endl;
+cin >> n;
+int *A0 = new int[n];
+   for (int i = 0; i < n; i++){
+      cout << "input A[" << i+1 << "]:";
+      cin >> A0[i];
+   }
+cout << "Sum of elements in the array: " << strange_sum(A0, n) << endl;
+return 0;
+}
