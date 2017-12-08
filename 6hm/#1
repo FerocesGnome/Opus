@@ -1,1 +1,30 @@
-
+#include <iostream>
+using namespace std;
+/* Напишите эффективную по времени и памяти программу,
+которая для заданной последовательности целых чисел
+находит минимальную сумму двух её элементов, номера
+которых различаются не менее чем на 5. Значение каждого
+элемента последовательности не превышает 1000. Количество
+элементов последовательности не превышает 10000. */
+int main(){
+int d = 5, a, n;
+int* A = new int[d];
+cout << "Enter the number of numbers: " << endl;
+cin >> n;
+   for(int i = 0; i < d; i++){
+      cout << "Enter the number: " << endl;
+      cin >> a;
+      A[i % d] = a;
+   }
+int mini = 0, m = 0;
+   for (int i = d; i < n; i++){
+      cout << "Enter the number: " << endl;
+      cin >> a;
+      if (i == d) m = A[i % d] + a;
+      if (A[i % d] < mini) mini = A[i % d];
+      if ((a + mini) < m) m = a + mini;
+      A[i % d] = a;
+   }
+cout << m;
+return 0;
+}
