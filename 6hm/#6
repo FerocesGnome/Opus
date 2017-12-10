@@ -1,0 +1,61 @@
+#include <iostream>
+using namespace std;
+void Farey(int n, bool asc){
+int a, b, c, d, x, y, k;
+   if (asc == 1) {
+      a = 1;
+      b = n;
+      c = 1;
+      d = n - 1;
+   } else {
+        a = n - 1; b = n; c = n - 2; d = n - 1;
+     }
+   while (((asc == 1) && (c <= n)) || ((asc == 0) && (a > 0))){
+      cout << a << "/" << b << endl;
+      k = (n + b) / d;
+      x = a;
+      y = b;
+      a = c;
+      b = d;
+      c = k * c - x;
+      d = k * d - y;
+   }
+}
+void Farey2(int n, bool asc){
+int a, b, c, d, x, y, k;
+   if (asc == 1) {
+      a = 1;
+      b = n;
+      c = 1;
+      d = n - 1;
+  } else {
+       a=n-1; b=n; c=n-2; d=n-1;
+    }
+   while (((asc == 1) && (c <= n)) || ((asc == 0) && (a > 0))){
+      cout << b << "/" << a << endl;
+      k = (n + b) / d;
+      x = a;
+      y = b;
+      a = c;
+      b = d;
+      c = k * c - x;
+      d = k * d - y;
+   }
+}
+int main(){
+int n;
+cout << "Enter n: ";
+cin >> n;
+   if (n != 1){
+      cout << "0/1" << endl;
+      Farey (n, true);
+      cout << "1/1" << endl;
+      Farey2 (n, false);
+      cout << "1/0" << endl;
+   } else {
+        cout << "0/1" << endl;
+        cout << "1/1" << endl;
+        cout << "1/0" << endl;
+     }
+return 0;
+}
