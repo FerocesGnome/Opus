@@ -1,0 +1,34 @@
+#include <iostream>
+using namespace std;
+
+void Qsort (int *A, int m, int n){
+int l = m, r = n;
+int piv = A[(l+r)/2];
+   while (l <= r){
+      while (A[l] < piv)
+         l++;
+      while (A[r] > piv)
+         r--;
+      if (l <= r )
+         swap(A[l++], A[r--]);
+   }
+if (m < r) Qsort(A, m, r);
+if (n > l) Qsort(A, l, n);
+}
+int main(){
+int n, m = 1, k;
+cout << "Enter the number of numbers (n):" << endl;
+cin >> n;
+int *A = new int [n];
+for (int i = 1; i <= n; i++){
+   cout << "Enter A[" << i << "]:";
+   cin >> A[i];
+}
+Qsort (A, m, n);
+cout << "Enter the k-th order statistics: " << endl;
+cin >> k;
+int g;
+cin >> g;
+cout << A[k]*g << endl;
+return 0;
+}
