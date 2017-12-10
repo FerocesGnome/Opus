@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+/* Напишите эффективную функцию находящую k-ую порядковую
+статистику в массиве. Программа должна состоять из этой
+функции и примера её использования в main. */
+int Qsort (int *A, int m, int n, int k){
+int l = m, r = n;
+int piv = A[(l + r) / 2];
+   while (l <= r){
+      while (A[l] < piv)
+         l++;
+      while (A[r] > piv)
+         r--;
+      if (l <= r )
+         swap(A[l++], A[r--]);
+   }
+   if (k == (l + r) / 2) return piv;
+   if (k <= (l + r) / 2){
+      if (m < r) Qsort(A, m, r, k);
+   } else {
+        if (l < n ) Qsort(A, l, n, k);
+     }
+}
+int main(){
+int n, m = 1, k;
+cout << "Enter the number of numbers (n):" << endl;
+cin >> n;
+int *A = new int [n];
+for (int i = 1; i <= n; i++){
+   cout << "Enter A[" << i << "]:";
+   cin >> A[i];
+}
+cout << "Enter the k-th order statistics: " << endl;
+cin >> k;
+cout << Qsort (A, m, n, k) << endl;
+return 0;
+}
