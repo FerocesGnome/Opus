@@ -1,0 +1,100 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+struct Complex{
+    double re, im;
+    friend void swap(Complex A, Complex B); /* для работы swap */
+    Complex(int x = 0, int y = 0):re(x), im(y){} /* конструктор */
+    Complex(Complex& A): re(A.re), im(A.im){ /* конструктор копирования */
+    }
+    Complex& operator = (Complex& A){ /* оператор присваивания */
+        Complex temp(A);
+        swap(A, *this);
+        return *this;
+    }
+    Complex& operator += (Complex& A){ /* для записи А+=В */
+        re = re + A.re;
+        im = im + A.im;
+        return *this;
+    }
+    Complex& operator -= (Complex& A){ /* для записи А-=В */
+        re = re - A.re;
+        im = im - A.im;
+        return *this;
+    }
+    Complex& operator *= (Complex& A){ /* для записи А*=В */
+        double temp_re = re*A.re - im*A.im;/* чтобы re и im не поменялись пока нам не нужно */
+        double temp_im = im*A.re + re*A.im;
+        re = temp_re;
+        im = temp_im;
+        return *this;
+    }
+    Complex& operator /= (Complex& A){ /* для записи А/=В */
+        double temp_re = (re*A.re + im*A.im)/(A.re*A.re + A.im*A.im);
+        double temp_im = (im*A.re - re*A.im)/(A.re*A.re + A.im*A.im);
+        re = temp_re;
+        im = temp_im;
+        return *this;
+    }
+    /* то что изменение/взятие мнимой/вещественной части должно
+     быть методом - странное решение хотя единственное для классов */
+    double GetReal (){ /*взятие вещественной части*/
+        return re;
+    }
+    double GetImaginary(){ /*взятие мнимой части*/
+        return im;
+    }
+    void ChangeReal(double a){ /*изменение вещественной части*/
+        re = a;
+    }
+    void ChangeImaginary(double a){ /*изменение мнимой части*/
+        im = a;
+    }
+    double GetModule(){ /* взятие модуля числа */
+        return sqrt(re*re + im*im);
+    }
+    double Interfacing(){ /* взятие сопряженного числа*/
+        im = -im;
+        return im;
+    }
+};
+bool operator == (Complex& A, Complex& B){ /* оператор сравнения(1) */
+    return (A.re == B.re && A.im == B.im);
+}
+bool operator != (Complex& A, Complex& B){ /* оператор сравнения(2) */
+    return (A.re != B.re || A.im != B.im);
+}
+void swap(Complex A, Complex B){
+    double temp_re = A.re, temp_im = A.im;
+    A.re = B.re; A.im = B.im;
+    B.re = temp_re; B.im = temp_im;
+}
+Complex operator + (Complex &A, Complex &B){ /* для записи А + В */
+    return Complex(A) += B;
+}
+Complex operator - (Complex &A, Complex &B){ /* для записи А - В */
+    return Complex(A) -= B;
+}
+Complex operator * (Complex &A, Complex &B){ /* для записи А * В */
+    return Complex(A) *= B;
+}
+Complex operator / (Complex &A, Complex &B){ /* для записи А / В */
+    return Complex(A) /= B;
+}
+int main(){
+    double a = 0, b = 1, c = 1, d = 0, n = 9, m = 3;
+    Complex X(a, b);
+    Complex Y(c, d);
+    Complex Z = X;
+    Complex W(0);
+    Complex A(Y);
+    W+=Y;
+    Y.ChangeImaginary(m);
+    n = X.GetReal();
+    cout << n << endl;
+    Y.Interfacing();
+    /* не буду приводить комплексные числа в красивый вид на выходе*/
+    cout << Y.re << " + " << Y.im << "i" << "\n";
+    cout << A.re << " + " << A.im << "i" << "\n";
+    return 0;
+}
