@@ -1,0 +1,101 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct whole{
+    vector <int> arr;
+    whole(int x = 0){
+        while(x != 1){
+            for (int i = 2; i <= x; i++){
+                if (x%i == 0){
+                    arr.push_back(i);
+                    x /= i;
+                    i = 2;
+                }
+            }
+        }
+    }
+    whole (const whole &A){
+        for (int i = 0; i <  A.arr.size(); i++){
+            arr.push_back(A.arr[i]);
+        }
+    }
+    whole& operator *= (int n){
+        while(n != 1){
+            for (int i = 2; i <= n; i++){
+                if (n%i == 0){
+                    arr.push_back(i);
+                    n /= i;
+                    i = 2;
+                }
+            }
+        }
+        return *this;
+    }
+    void print() {
+        for (int i = 0; i <  arr.size(); i++){
+            cout << arr[i] << ", ";
+        }
+        cout << endl;
+    }
+};
+
+whole operator* (whole &A, whole &B){
+    whole C(A);
+    for (int i = 0; i <  B.arr.size(); i++){
+        C.arr.push_back(B.arr[i]);
+    }
+    return C;
+}
+
+whole operator/ (whole &A, whole &B){
+    whole C(A);
+    for (int i = 0; i <  C.arr.size(); i++){
+        for (int j = 0; i <  B.arr.size(); i++){
+            if (C.arr[i] == B.arr[j]){
+                C.arr[i] = 0;
+                break;
+            }
+        }
+    }
+    whole D(1);
+    for (int i = 0; i <  C.arr.size(); i++){
+        if (C.arr[i] != 0) D.arr.push_back(C.arr[i]);
+    }
+    return D;
+}
+
+whole GCD (whole &A, whole&B){
+    whole C(1);
+    whole first(A);
+    whole second(B);
+    for (int i = 0; i < first.arr.size(); i++){
+        for (int j = 0; j < second.arr.size(); j++){
+            if (first.arr[i] == second.arr[j]){
+                C.arr.push_back(first.arr[i]);
+                second.arr[j] = 0;
+                break;
+            }
+        }
+    }
+    return C;
+}
+
+whole L_C_M (whole &A, whole&B){
+    whole first(A);
+    whole second(B);
+    whole retur = first*second;
+    whole gcd = GCD(first, second);
+    retur = retur / gcd;
+    return retur;
+}
+
+int main(){
+    int a, b;
+    cin >> a >> b;
+    whole A(a);
+    whole B(b);
+    whole C = L_C_M(A, B);
+    C.print();
+    return 0;
+}
