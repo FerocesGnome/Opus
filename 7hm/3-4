@@ -1,0 +1,138 @@
+/*Реализовать структуру(а лучше класс) для работы со строками
+(можно довести до ума структуру из прошлом домашнем по структурам)
+и программу с примером работы этой структуры. Структура должна уметь
+не меньше чем в прошлом дз, но кроме того: удовлетворять Правилу Трёх,
+иметь конструктор принимающий C-style строки и конструктор принимающий
+длину строки ,иметь перегруженным оператор квадратные скобки для доступа
+к символам по индексам. Пример, кроме всего прочего, должен содержать
+замену некоторой строки на строку с Вашим ФИО. В данной программе
+запрещено пользоваться стандартными строками C++.*/
+/* Собственно предыдущее задание */
+/*В программе должна быть структура с конструктором и деструктором,
+хранящая динамический массив символов и и размер строки. В структуре
+должны быть методы для получения длины(strlen), для получения символа по
+индексу(get(i)), для изменения символа по индексу(set(i))*/
+/*В структуре должны быть методы для конкатенации строки к текущей
+(приписывание), поиска подстроки(возвращает номер первого символа подстроки
+или -1, если такого нет), получения подстроки от i’ого до j’ого индекса
+включительно.*/
+#include <iostream>
+using namespace std;
+class String{
+    char* arr;
+    int lenght;
+    public:
+    String(char* a, int n = 0):arr(a), lenght(n) {
+/* конструктор принимающий строку и её длину */
+/* конструктор принимающий только строку или только длину не получился */
+        for (int i = 0; i < lenght; i++){
+            arr[i] = a[i];
+        }
+    }
+    String (const String &A){ /* конструктор копирования */
+        lenght = A.lenght;
+        this->arr = A.arr;
+    }
+    char get (int i) { /* взятие итого элемента */
+        return arr[i];
+    }
+    void set (char a, int i) { /* изменение итого элемента */
+        arr[i] = a;
+    }
+    void print() { /* вывод */
+        for (int i = 0; i < lenght; i++) {
+            cout << arr[i];
+        }
+        cout << endl;
+    }
+    int strlen(){ /* нахождение длины */
+        return lenght;
+    }
+    ~String() { /* деструктор */
+        delete[] arr;
+    }
+    String& operator += (String& A){ /* конкатенация*/
+        int temp_lenght = this->lenght;
+        this->lenght = this->lenght+A.lenght;
+        for (int i = 0; i < this->lenght; i++){
+            if (i < temp_lenght) this->arr[i] = this->arr[i];
+            else this->arr[i] = A.arr[i - temp_lenght];
+        }
+    return *this;
+    }
+    char& operator[] (int i) { /* работает */
+        return arr[i];
+    }
+    String& operator = (String A){ /* работает */
+        this->lenght = A.lenght;
+        for (int i = 0; i < A.lenght; i++){
+            this->arr[i] = A.arr[i];
+        }
+        return *this;
+    }
+    String& operator = (char *a){ /*не работает, но я пытался*/
+        /* для замены строки на имя */
+        int i = 0;
+        while (a[i] != '\0'){
+            i++;
+        }
+        this->lenght = i;
+        for (int j = 0; j <= i; j++){
+            this->arr[j] = a[j];
+        }
+        return *this;
+    }
+};
+
+String operator+(String &A, String &B){ /*конкатенация*/
+    return String(A)+=B;
+}
+
+int substring(String &a, String &b){ /* поиск подстроки */
+    int i, j;
+    int lenA = a.strlen(), lenB = b.strlen();
+        for (i = 0; i <= lenA - lenB; i++){
+				for (j = 0; j < lenB  && a.get(i+j) == b.get(j); j++){
+				if (j == lenB - 1)
+					return i;
+				}
+        }
+    return -1;
+}
+
+String G_F_T(String &A, int a, int b){ /* получение подстроки */
+    String B = A; /* костыль, иначе не работает */
+    if (a > b){
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    int sizeB = b - a + 1;
+    char d[sizeB];
+    String D(d, sizeB);
+    for (int i = 0; i < sizeB; i++){
+        D.set(A.get(i+a), i);
+        cout << D.get(i);
+    }
+    B = D;
+return B;
+}
+
+int main () {
+    int n, m;
+    cin >> n;
+    char a[n];
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    cin >> m;
+    char c[m];
+    for (int i = 0; i < m; i++) {
+        cin >> c[i];
+    }
+    String A (a, n);
+    String B (c, m);
+    B+=A;
+    B.print();
+    return 0;
+}
