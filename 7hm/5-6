@@ -10,7 +10,7 @@ struct Vector{
     int* Re = new int;
     int* Im = new int;
     int Size;
-    Vector(int* X, int* Y, int lenght){
+    Vector(int* X, int* Y, int lenght){ /* конструктор */
         Size = lenght;
         for (int i = 0; i < Size; i++){
             Re[i] = X[i];
@@ -22,13 +22,13 @@ struct Vector{
         this->Re = A.Re;
         this->Im = A.Im;
     }
-    void print() {
+    void print() { /* вывод на экран */
         for (int i = 0; i < Size; i++) {
             cout << Re[i] << "+ i*" << Im[i] << endl;
         }
         cout << endl;
     }
-    int* operator[] (int i) {
+    int* operator[] (int i) { /* оператор [] */
         int *new_array = new int[2];
         new_array[0] = this->Re[i];
         new_array[1] = this->Im[i];
@@ -39,13 +39,13 @@ struct Vector{
         delete[] Im;
     }
 };
-Vector push_back(Vector &A, int X, int Y){
+Vector push_back(Vector &A, int X, int Y){ /* метод push_back */
     A.Size++;
     A.Re[A.Size-1] = X;
     A.Im[A.Size-1] = Y;
     return A;
 }
-Vector change_size(Vector &A, int L){
+Vector change_size(Vector &A, int L){ /* изменение размера */
     if (L >= 0){
         A.Size+=L;
         for (int i = A.Size - L; i < A.Size; i++){
@@ -56,7 +56,7 @@ Vector change_size(Vector &A, int L){
         A.Size-=L;
     }
 }
-void PrInT (int* A){
+void PrInT (int* A){ /* вывод i'того элемента */
     cout << A[0] << "+ i*" << A[1] << endl;
 }
 
