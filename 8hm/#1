@@ -65,7 +65,7 @@ struct stack{
         }
     }
 
-    bool Is_Empty (){
+    bool empty (){
         if (head != NULL) return false;
         else return true;
     }
@@ -95,13 +95,13 @@ int main(){
     for (int i = 0; i < 4; i++){
         cout << A.front() << " ";
     }
-    cout << A.Is_Empty();
+    cout << A.empty();
     cout << "\n";
     for (int i = 0; i < 5; i++){
         cout << B.front() << " ";
     }
     Cout(z);
-    cout << B.Is_Empty();
+    cout << B.empty();
     B.pop();
     return 0;
 }
