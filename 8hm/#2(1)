@@ -51,9 +51,7 @@ struct queue{
             return 0;
         }
         node* temp = head;
-        head = head->next;
         int data = temp->data;
-        delete temp;
         return data;
     }
 
