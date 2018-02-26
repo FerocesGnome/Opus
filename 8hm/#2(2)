@@ -37,14 +37,14 @@ public:
         }
     }
 
-    void push(int new_data){
+    void push(int new_data){ /* добавление элемента */
         node* temp = new node;
         temp->data = new_data;
         temp->next = this->tail;
         this->tail = temp;
     }
 
-    int front(){
+    int front(){ /* взятие элемента без удаления */
         if (tail == NULL){
             return 0;
         }
@@ -62,7 +62,7 @@ public:
         }
     }
 
-    void pop(){
+    void pop(){ /* удаление элемента без взятия */
         if (tail != NULL){
             node* temp = tail;
             if (tail->next != NULL){
