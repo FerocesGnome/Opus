@@ -1,1 +1,96 @@
+#include <iostream>
+using namespace std;
+/*  Реализовать класс для работы с очередью символов и программу
+с примером работы этого класса. Очередь должна
+удовлетворять правилу Трёх
+содержать методы push, pop, front, empty. */
+struct node{
+    int data;
+    node* next = NULL;
+};
+class queue{
+    node* tail = NULL;
+public:
+    queue (int new_data = 0): tail (new node){    /* конструктор */
+    tail->data = new_data;
+    }
 
+    ~queue(){    /* деструктор */
+        while(tail){
+            node* temp = tail;
+            tail = temp->next;
+            delete temp;
+        }
+    }
+
+    queue (const queue &A){    /* конструктор копий */
+        node* p = new node;
+        p->data = A.tail->data;
+        tail = new node;
+        tail = p;
+        node* temp = A.tail->next;
+        while (temp){
+            p->next = new node;
+            p->next->data = temp->data;
+            temp = temp->next;
+            p = p->next;
+        }
+    }
+
+    void push(int new_data){
+        node* temp = new node;
+        temp->data = new_data;
+        temp->next = this->tail;
+        this->tail = temp;
+    }
+
+    int front(){
+        if (tail == NULL){
+            return 0;
+        }
+        node* temp = tail;
+        if (tail->next != NULL){
+            while (temp->next->next != NULL){
+                temp = temp->next;
+            }
+            int data = temp->next->data;
+            return data;
+        } else {
+            node* temp = tail;
+            int data = temp->data;
+            return data;
+        }
+    }
+
+    void pop(){
+        if (tail != NULL){
+            node* temp = tail;
+            if (tail->next != NULL){
+                while (temp->next->next != NULL){
+                    temp = temp->next;
+                }
+                delete temp->next;
+                temp->next = NULL;
+            } else {
+                node* temp = tail;
+                delete temp;
+                tail = NULL;
+            }
+        }
+    }
+};
+
+int main(){
+    queue A(7);
+    A.push(5);
+    A.push(7);
+    queue B(A);
+    for (int i = 0; i < 4; i++){
+        cout << A.front() << "\n";
+        A.pop();
+    }
+    for (int i = 0; i < 4; i++){
+        B.pop();
+        cout << B.front() << "\n";
+    }
+}
