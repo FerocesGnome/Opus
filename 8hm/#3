@@ -1,1 +1,139 @@
+#include <iostream>
+using namespace std;
+/*  Реализовать класс для работы с очередью символов и программу
+с примером работы этого класса. Очередь должна
+удовлетворять правилу Трёх
+содержать методы push, pop, front, empty. */
+struct node{
+    long long data;
+    node* next = NULL;
+    node* prev = NULL;
+};
+class deque{
+    node* head = NULL;
+    node* tail = NULL;
 
+public:
+    deque (long long new_data = 0): head(new node){    /* конструктор */
+    head->data = new_data;
+    tail = head;
+    }
+
+    ~deque(){ /* деструктор */
+        while (head != tail){
+            node* temp = head -> next;
+            delete head;
+            head = temp;
+            head->prev = NULL;
+        }
+        node* temp = head;
+        delete temp;
+        head = NULL;
+        tail = head;
+    }
+
+    deque(const deque &A){
+        if (A.head != NULL){
+            node* p = new node;
+            p->data = A.head->data;
+            p->prev = NULL;
+            p->next = NULL;
+            head = new node;
+            head = p;
+            node* temp = A.head->next;
+            while (temp){
+                p->next = new node;
+                p->next->data = temp->data;
+                p->next->prev = p;
+                temp = temp->next;
+                p = p->next;
+            }
+            tail = new node;
+            tail = p;
+            tail->next = NULL;
+        }
+    }
+
+    void push_back(long long new_data){ /* вставка элемента в конец */
+        tail->next = new node;
+        tail->next->data = new_data;
+        tail->next->prev = tail;
+        tail = tail->next;
+    }
+
+    void push_front(long long new_data){ /* вставка элемента в начало */
+        head->prev = new node;
+        head->prev->data = new_data;
+        head->prev->next = head;
+        head = head->prev;
+    }
+
+    long long front_back(){ /* взятие элемента без удаления из конца */
+        if (tail == NULL){
+            return 0;
+        }
+        long long data = tail->data;
+        return data;
+    }
+
+    long long front_front(){ /* взятие элемента без удаления из начала */
+        if (head == NULL){
+            return 0;
+        }
+        long long data = head->data;
+        return data;
+    }
+
+    void pop_back(){ /* удаление элемента без взятия из конца */
+        if (tail != NULL){
+            node* temp = tail;
+            if (head == tail){
+            head = NULL;
+            tail = head;
+            delete temp;
+            } else {
+                tail = temp -> prev;
+                delete temp;
+                tail -> next = NULL;
+            }
+        }
+    }
+
+    void pop_front(){ /* удаление элемента без взятия из начала */
+        if (head != NULL){
+        node* temp = head;
+        if (head == tail){
+            head = NULL;
+            tail = head;
+            delete temp;
+        } else {
+            head = temp->next;
+            head->prev = NULL;
+            delete temp;
+        }
+        }
+    }
+
+    bool empty (){
+        if (head == NULL) return 1;
+        else return 0;
+    }
+};
+
+int main(){
+    deque A(2);
+    A.push_front(5);
+    A.push_front(3);
+    A.push_back(1);
+    A.push_back(4);
+    cout << A.front_back() << " " << A.front_front();
+    A.pop_back();
+    A.pop_front();
+    cout << " " << A.front_front() << " " << A.front_back() << " ";
+    deque B(A);
+    for (int i = 0; i < 6; i++){
+        cout << B.front_front() << " ";
+        B.pop_front();
+    }
+    return 0;
+}
