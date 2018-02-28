@@ -1,9 +1,10 @@
 #include <iostream>
 using namespace std;
-/*  Реализовать класс для работы с очередью символов и программу
-с примером работы этого класса. Очередь должна
-удовлетворять правилу Трёх
-содержать методы push, pop, front, empty. */
+/* Реализовать структуру или класс для работы с деком long long-чисел и
+программу с примером работы этой структуры. Дек должен
+удовлетворять правилу Трёх 
+содержать методы push_back,push_front, pop_back,pop_front,back, front, empty. */
+
 struct node{
     long long data;
     node* next = NULL;
@@ -114,7 +115,7 @@ public:
         }
     }
 
-    bool empty (){
+    bool empty (){ /* проверка на пустоту */
         if (head == NULL) return 1;
         else return 0;
     }
