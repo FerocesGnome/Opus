@@ -1,1 +1,260 @@
+#include <iostream>
+using namespace std;
+/*  Реализовать структуру или класс для работы с двусвязным
+ линейным списком целых чисел и поддерживать классический для
+  C++ функционал, кроме аллокаторатов и итераторов */
 
+struct node{
+    int data;
+    node* next = NULL;
+    node* prev = NULL;
+};
+
+class list{
+    node* head = NULL;
+    node* tail = NULL;
+
+public:
+    list (int new_data = 0): head(new node){    /* конструктор */
+    head->data = new_data;
+    tail = head;
+    }
+
+    ~list(){ /* деструктор */
+        while (head != tail){
+            node* temp = head -> next;
+            delete head;
+            head = temp;
+            head->prev = NULL;
+        }
+        node* temp = head;
+        delete temp;
+        head = NULL;
+        tail = head;
+    }
+
+    list(const list &A){
+        node* p = A.head;
+        if (A.tail != NULL){
+            node* temp = new node;
+            temp -> data = A.head -> data;
+            tail = temp;
+            head = temp;
+            p = p -> next;
+            while (p != NULL){
+                push_back (p -> data);
+                p = p -> next;
+            }
+        }
+    }
+
+    void push_back(int new_data){ /* вставка элемента в конец */
+        tail->next = new node;
+        tail->next->data = new_data;
+        tail->next->prev = tail;
+        tail = tail->next;
+    }
+
+    void push_front(int new_data){ /* вставка элемента в начало */
+        head->prev = new node;
+        head->prev->data = new_data;
+        head->prev->next = head;
+        head = head->prev;
+    }
+
+    int front_back(){ /* взятие элемента без удаления из конца */
+        if (tail == NULL){
+            return 0;
+        }
+        int data = tail->data;
+        return data;
+    }
+
+    int front_front(){ /* взятие элемента без удаления из начала */
+        if (head == NULL){
+            return 0;
+        }
+        int data = head->data;
+        return data;
+    }
+
+    void pop_back(){ /* удаление элемента без взятия из конца */
+        if (tail != NULL){
+            node* temp = tail;
+            if (head == tail){
+            head = NULL;
+            tail = head;
+            delete temp;
+            } else {
+                tail = temp -> prev;
+                delete temp;
+                tail -> next = NULL;
+            }
+        }
+    }
+
+    void pop_front(){ /* удаление элемента без взятия из начала */
+        if (head != NULL){
+        node* temp = head;
+        if (head == tail){
+            head = NULL;
+            tail = head;
+            delete temp;
+        } else {
+            head = temp->next;
+            head->prev = NULL;
+            delete temp;
+        }
+        }
+    }
+
+    void insert (int new_data, int data){ /* вставка элемента
+         по номеру, если указанный номер больше размера листа
+         новый элемент вставляется в конец */
+        int number = data;
+        if (head == NULL) push_front(new_data);
+        node* temp = head;
+        while (temp->next != NULL){
+            if (number == 0){
+                if (temp->prev == NULL) push_front(new_data);
+                else {
+                    temp->prev->next = new node;
+                    temp->prev->next->prev = temp->prev;
+                    temp->prev = temp->prev->next;
+                    temp->prev->next = temp;
+                    temp->prev->data = new_data;
+                }
+            }
+            if (temp->next == NULL && number != 0) push_back(new_data);
+            number--;
+            temp = temp->next;
+        }
+    }
+
+    void erase (int data){ /* удаление любого элемента по номеру,
+        если указанный номер больше размера листа, удаляется последний */
+        int number = data;
+        if (head != NULL){
+            node* temp = head;
+            while (temp->next != NULL){
+                if (number == 0){
+                    if (temp == head){
+                        pop_front();
+                        break;
+                    } else {
+                        temp->next->prev = temp->prev;
+                        temp->prev->next = temp->next;
+                        delete temp;
+                        break;
+                    }
+                }
+                if (temp->next == NULL && number != 0){
+                    pop_back();
+                    break;
+                }
+                number--;
+                temp = temp->next;
+            }
+        }
+    }
+
+    void clear (){ /* удаление листа */
+        while (head != tail){
+            node* temp = head -> next;
+            delete head;
+            head = temp;
+            head->prev = NULL;
+        }
+        node* temp = head;
+        delete temp;
+        head = NULL;
+        tail = head;
+    }
+
+    int get (int index){ /* взятие элемента по номеру без удаления,
+        если элемент больше размера листа берётся последний */
+        int number = index;
+        if (head == NULL) return 0;
+        node* temp = head;
+        while (temp->next != NULL){
+            if (number == 0){
+                int data = temp->data;
+                return data;
+            }
+            if (temp->next == NULL && number != 0){
+                int data = tail->data;
+                return data;
+            }
+            number--;
+            temp = temp->next;
+        }
+    }
+
+    int size (){ /* размер листа */
+        if (head == NULL) return 0;
+        node* temp = head;
+        int size = 1;
+        while (temp->next != NULL){
+            temp = temp->next;
+            size++;
+        }
+        return size;
+    }
+
+    void swap (int index1, int index2){ /* перестановка двух элементов */
+        int number1 = index1;
+        int number2 = index2;
+        if (number1 > number2){
+            int temp = number2;
+            number2 = number1;
+            number1 = temp;
+        }
+        if (number1 > size()) number1 = size();
+        if (number2 > size()) number2 = size();
+        if ((size() >= 1) && (number1 != number2)){
+            int data1 = get(number1);
+            int data2 = get(number2);
+            insert(data1, number2);
+            insert(data2, number1);
+            number1++;
+            number2++;
+            erase(number1);
+            erase(number2);
+        }
+    }
+
+    bool empty (){ /* проверка на пустоту */
+        if (head == NULL) return 1;
+        else return 0;
+    }
+
+    void print (){ /* выписывание листа в консоль */
+        cout << endl;
+        if (head == NULL){
+            cout << endl;
+            cout << "Are you really so stupid";
+        } else {
+            node* temp = head;
+            while (temp != tail ){
+                cout << temp -> data << " ";
+                temp = temp -> next;
+            }
+            cout << temp -> data;
+        }
+    }
+};
+
+int main(){
+    list A(2);
+    A.push_front(5);
+    A.push_front(3);
+    A.erase(1);
+    A.push_back(1);
+    A.push_back(4);
+    A.erase(2);
+    A.push_front(1);
+    A.print();
+    A.swap(2,4);
+    A.print();
+    return 0;
+}
