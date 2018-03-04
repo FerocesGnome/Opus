@@ -1,6 +1,13 @@
 #include <iostream>
     using namespace std;
-
+/* Реализовать структуру или класс для работы с приоритетной очередью
+одновременно исполняемых задач и программу с примером работы этой
+структуры. Очередь с приоритетом должна 
+удовлетворять правилу Трёх и 
+содержать методы push, pop, front, empty, tick(увеличить время на единицу). 
+Каждая задача должна храниться как объект и состоит из имени,времени
+поступления,срока выполнения, дополнительной информации. Когда задача
+выполнена в консоль должны выписываться её имя и доп.информация */
     struct data{
         int time_begin;
         int time_exec;
@@ -15,9 +22,9 @@
         int timer;
 
         public:
-        priority(): head(NULL), tail(NULL), timer(0){}
+        priority(): head(NULL), tail(NULL), timer(0){} /* конструктор */
 
-        void tick(){
+        void tick(){ /* увеличить время на единицу */
         timer++;
         if (head != NULL){
             if(method(head)- timer == 0){
@@ -26,7 +33,7 @@
             }
         }
 
-        void Push(){
+        void Push(){ /* добарить элемент */
             if (head == NULL) {
                 data* temp = new data;
                 cout << "Enter name of task: ";
@@ -81,7 +88,7 @@
             }
         }
 
-        priority (priority&A) {
+        priority (priority&A) { /* конструктор копирования */
             data* p = A.head;
             timer = A.timer;
             if (A.head != NULL){
@@ -111,7 +118,7 @@
         }
 
 
-        void Pop(){
+        void Pop(){ /* взятие элемента */
             if (head == NULL){
                 cout << " Queue with priority is empty ";
             }
@@ -124,14 +131,14 @@
             }
         }
 
-        bool Empty(){
+        bool Empty(){ /* проверка на пустоту */
             if (head==0)
                 return 1;
             else
                 return 0;
         }
 
-        void print(){
+        void print(){ /* выписывание приоритетной очереди в кансоль */
             if (head != NULL){
                 cout << endl << endl << " YOUR QUEUE: " << endl;
                 data* temp = head;
@@ -151,7 +158,7 @@
         }
 
 
-        ~priority(){
+        ~priority(){ /* деструктор */
             if (head != NULL){
                 data *temp = head;
                 while (temp != tail){
