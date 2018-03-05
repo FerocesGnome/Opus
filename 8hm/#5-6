@@ -111,35 +111,47 @@ public:
     void insert (int new_data, int data){ /* вставка элемента
          по номеру, если указанный номер больше размера листа
          новый элемент вставляется в конец */
-        int number = data;
+        int number = 0;
         if (head == NULL) push_front(new_data);
-        node* temp = head;
-        while (temp->next != NULL){
-            if (number == 0){
-                if (temp->prev == NULL) push_front(new_data);
-                else {
-                    temp->prev->next = new node;
-                    temp->prev->next->prev = temp->prev;
-                    temp->prev = temp->prev->next;
-                    temp->prev->next = temp;
-                    temp->prev->data = new_data;
+        else {
+            node* temp = head;
+            while (temp != NULL){
+                if (number == data){
+                    if (temp->prev == NULL){
+                        push_front(new_data);
+                        break;
+                    }
+                    else {
+                        temp->prev->next = new node;
+                        temp->prev->next->prev = temp->prev;
+                        temp->prev = temp->prev->next;
+                        temp->prev->next = temp;
+                        temp->prev->data = new_data;
+                        break;
+                    }
                 }
+                if (temp -> next == NULL && number != data){
+                    push_back(new_data);
+                    break;
+                }
+                number++;
+                temp = temp->next;
             }
-            if (temp->next == NULL && number != 0) push_back(new_data);
-            number--;
-            temp = temp->next;
         }
     }
 
     void erase (int data){ /* удаление любого элемента по номеру,
         если указанный номер больше размера листа, удаляется последний */
-        int number = data;
+        int number = 0;
         if (head != NULL){
             node* temp = head;
-            while (temp->next != NULL){
-                if (number == 0){
+            while (temp != NULL){
+                if (number == data){
                     if (temp == head){
                         pop_front();
+                        break;
+                    } else if (temp == tail){
+                        pop_back();
                         break;
                     } else {
                         temp->next->prev = temp->prev;
@@ -148,11 +160,11 @@ public:
                         break;
                     }
                 }
-                if (temp->next == NULL && number != 0){
+                if (temp->next == NULL && number != data){
                     pop_back();
                     break;
                 }
-                number--;
+                number++;
                 temp = temp->next;
             }
         }
@@ -171,24 +183,19 @@ public:
         tail = head;
     }
 
-    int get (int index){ /* взятие элемента по номеру без удаления,
-        если элемент больше размера листа берётся последний */
-        int number = index;
-        if (head == NULL) return 0;
+    int get(int index){ /* взятие элемента по номеру без удаления,
+если номер элемента больше размера листа берётся последний */
         node* temp = head;
-        while (temp->next != NULL){
-            if (number == 0){
-                int data = temp->data;
-                return data;
-            }
-            if (temp->next == NULL && number != 0){
-                int data = tail->data;
-                return data;
-            }
-            number--;
+        if (index < 0) return head->data;
+        if (index > size()) return tail->data;
+        int i = 0;
+        while(i < index && temp != NULL){
             temp = temp->next;
+            i++;
         }
-    }
+        if(temp == 0) return 0;
+        else return temp->data;
+        }
 
     int size (){ /* размер листа */
         if (head == NULL) return 0;
@@ -209,9 +216,10 @@ public:
             number2 = number1;
             number1 = temp;
         }
-        if (number1 > size()) number1 = size();
-        if (number2 > size()) number2 = size();
-        if ((size() >= 1) && (number1 != number2)){
+        int temp = size() - 1;
+        if (number1 >= temp) number1 = temp;
+        if (number2 >= temp) number2 = temp;
+        if ((temp >= 1) && (number1 != number2)){
             int data1 = get(number1);
             int data2 = get(number2);
             insert(data1, number2);
@@ -251,10 +259,10 @@ int main(){
     A.erase(1);
     A.push_back(1);
     A.push_back(4);
-    A.erase(2);
     A.push_front(1);
+    A.erase(3);
     A.print();
-    A.swap(2,4);
+    A.swap(0, 4);
     A.print();
     return 0;
 }
