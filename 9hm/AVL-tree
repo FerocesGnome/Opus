@@ -1,1 +1,224 @@
+#include <iostream>
+#include <queue>
+#include <list>
+using namespace std;
+/*  Реализовать структуру или класс для работы с двусвязным
+ линейным списком целых чисел и поддерживать классический для
+  C++ функционал, кроме аллокаторатов и итераторов */
 
+struct node{
+    int data;
+    int height;
+    node* left = NULL;
+    node* right = NULL;
+    node(int k){
+        data = k;
+        left = right = 0;
+        height = 1;
+    }
+};
+
+/* функции для работы с деревом*/
+
+int height(node* p){ /* высота узла (просто число пока что) */
+    if (p != NULL) return p->height;
+    else return 0;
+}
+
+int bfactor(node* p){ /* разница между высотой правого и левого поддерева */
+    return height(p->right) - height(p->left);
+}
+
+void fixheight(node* p){ /* восстанавливает height для заданного узла */
+    int hl = height(p->left);
+    int hr = height(p->right);
+    if (hl > hr) p->height = hl + 1;
+    else p->height = hr + 1;
+}
+
+node* rotateright(node* p){ /* малый правый поворот */
+    node* q = p->left;
+    p->left = q->right;
+    q->right = p;
+    fixheight(p);
+    fixheight(q);
+    return q;
+}
+
+node* rotateleft(node* q){ /* малый левый поворот */
+    node* p = q->right;
+    q->right = p->left;
+    p->left = q;
+    fixheight(q);
+    fixheight(p);
+    return p;
+}
+
+node* balance(node* p){ /* балансировка комбинациями правого и левого
+     поворотов (при необходимости) */
+    fixheight(p);
+    if ( bfactor(p) == 2 ){
+        if ( bfactor(p->right) < 0 )
+            p->right = rotateright(p->right);
+        return rotateleft(p);
+    }
+    if ( bfactor(p) == -2 ){
+        if ( bfactor(p->left) > 0 )
+            p->left = rotateleft(p->left);
+        return rotateright(p);
+    }
+    return p;
+}
+
+node* insert(node* p, int new_data){ /* добавление элемента (с последующей балансировкой) */
+    if (p == NULL) return new node(new_data);
+    if (new_data < p->data)
+        p->left = insert(p->left, new_data);
+    else
+        p->right = insert(p->right, new_data);
+    return(balance(p));
+}
+
+node* findmin(node* p){
+    if (p->left != NULL) return findmin(p->left);
+    else return p;
+}
+
+node* removemin(node* p){
+    if(p->left == 0)
+        return p->right;
+    p->left = removemin(p->left);
+    return balance(p);
+}
+
+node* remove(node* p, int data){
+    if (p == NULL) return 0;
+    if (data < p->data)
+        p->left = remove(p->left, data);
+    else if(data > p->data)
+        p->right = remove(p->right, data);
+    else {
+        node* q = p->left;
+        node* r = p->right;
+        delete p;
+        if (r == NULL) return q;
+        node* min = findmin(r);
+        min->right = removemin(r);
+        min->left = q;
+        return balance(min);
+    }
+    return balance(p);
+}
+
+struct avltree{
+    node* root = NULL;
+
+    avltree (int new_data = 0){    /* конструктор */
+    root = new node(new_data);
+    }
+
+    ~avltree(){
+        if (root != NULL){
+            clear(root->left);
+            clear(root->right);
+            root = NULL;
+        }
+    }
+
+    bool dfs (int data, node* root){ /* рекурсивный обход в глубину с поиском элемента */
+        if(root->data == data) return true;
+        if(root->left != NULL){
+            if (dfs(data, root->left)) return true;
+        }
+        if(root->right != NULL){
+            if (dfs(data, root->right)) return true;
+        }
+        else return false;
+    }
+
+    bool bfs(int data, node* root){ /* НЕрекурсивный обход в глубину с поиском элемента */
+        queue <node*> A;
+        A.push(root);
+        while (A.empty() == 0){
+            node* temp = A.front();
+            A.pop();
+            if (temp->data == data) return true;
+            if (temp->left != NULL) A.push(temp->left);
+            if (temp->right != NULL) A.push(temp->right);
+        }
+        return false;
+    }
+
+    bool bin_search(int data, node* root){ /* бинарный поиск  */
+        if (root->data == data) return true;
+        if (root->data > data) return bin_search(data, root->left);
+        if (root->data < data) return bin_search(data, root->right);
+        else return false;
+    }
+
+    void weight(node* root){
+        queue <node*> Q;
+        Q.push(root);
+        while (Q.empty() != false){
+            node* temp = Q.front();
+            Q.pop();
+            cout << "\n" << temp->data << "\n";
+            if(temp->left != NULL) Q.push(temp->left);
+            if(temp->right != NULL) Q.push(temp->right);
+        }
+    }
+
+    void print(node* root){
+        list <int> A;
+        if (root != NULL){
+            int third_leg = root->data;
+            A.push_front(third_leg);
+            if (root->left != NULL) print(root->left);
+            if (root->right != NULL) print(root->right);
+        }
+        A.sort();
+        for (unsigned int i = 0; i < A.size(); i++){
+            cout << A.front() << " ";
+            A.pop_front();
+        }
+    }
+
+    void clear(node* root){
+        if (root != NULL){
+            clear(root->left);
+            clear(root->right);
+            delete root;
+        }
+    }
+
+    int get_height(node* root){
+        if (root == NULL)
+            return 0;
+        else return root->height;
+    }
+
+    int get_nodes_on_level(node* root, int level){
+        if (root == NULL) return 0;
+        if (level <= 0) return 0;
+        int weight = 0;
+        queue <node*> Q;
+        Q.push(root);
+        while (!Q.empty()){
+            node* temp = Q.front();
+            Q.pop();
+            if (get_height(root) == level) weight++;
+            if (temp->left != NULL) Q.push(temp->left);
+            if (temp->right != NULL) Q.push(temp->right);
+        }
+        return weight;
+    }
+};
+
+int main(){
+    avltree A(2);
+    insert(A.root, 3);
+    insert(A.root, 1);
+    A.print(A.root);
+    return 0;
+}
+/* Получилось не очень, но хоть как-то */
