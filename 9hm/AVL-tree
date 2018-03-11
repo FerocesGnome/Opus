@@ -116,6 +116,20 @@ struct avltree{
     avltree (int new_data = 0){    /* конструктор */
     root = new node(new_data);
     }
+    
+    avltree (const avltree &other){
+        node* temp = new node;
+        node* cur = other.root;
+        queue <node*> A;
+        A.push(cur);
+        while (A.empty() == 0){
+            node* temp = A.front();
+            A.pop();
+            insert(nroot, temp->data);
+            if (temp->left != NULL) A.push(temp->left);
+            if (temp->right != NULL) A.push(temp->right);
+        }
+    }
 
     ~avltree(){
         if (root != NULL){
