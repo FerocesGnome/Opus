@@ -1,0 +1,258 @@
+#include <iostream>
+using namespace std;
+
+struct node{
+        int data;
+        node *left;
+        node *right;
+        node* priv;
+        int maxheight = 1;
+        int minheight = 1;
+};
+
+struct heap{
+    node* root = NULL;
+
+    ~heap(){
+        clear(root);
+    }
+
+    void clear(node* temp){
+        if (temp != NULL){
+            clear(temp->left);
+            clear(temp->right);
+            delete temp;
+        }
+    }
+
+    int Minheight(node *temp) {
+        if (temp == NULL)
+            return 0;
+        else
+            return temp -> minheight;
+    }
+
+    int Maxheight(node *temp) {
+        if (temp == NULL)
+            return 0;
+        else
+            return temp -> maxheight;
+    }
+
+    int balfactormin(node *temp){
+        if (temp == NULL)
+            return 0;
+        else
+            return Minheight(temp -> left) - Minheight(temp -> right);
+    }
+
+    int balfactormax(node *temp){
+        if (temp == NULL)
+            return 0;
+        else
+            return Maxheight(temp -> left) - Maxheight(temp -> right);
+    }
+
+    node* findlastpush(node* temp){
+        while ((temp->left != NULL) && (temp->right != NULL)){
+            if (balfactormin(temp) == 0)
+                temp = temp -> left;
+            else
+                temp = temp -> right;
+        }
+        return temp;
+    }
+
+    void fix_the_heights(node* temp){
+        while (temp != NULL){
+            temp -> minheight = 1 + min(Minheight(temp -> left), Minheight(temp -> right));
+            temp -> maxheight = 1 + max(Maxheight(temp -> left), Maxheight(temp -> right));
+            temp = temp->priv;
+        }
+    }
+
+    void Sort(node* temp){
+        while (temp->priv != NULL){
+            if (temp->data > temp->priv->data){
+                int i = temp->data;
+                temp->data = temp->priv->data;
+                temp->priv->data = i;
+            } else break;
+            temp = temp->priv;
+        }
+    }
+
+    void add(int new_data){
+        node* temp = root;
+        if (temp == NULL){
+            root = new node;
+            root->data = new_data;
+            root->priv = NULL;
+            root->left = NULL;
+            root->right = NULL;
+            root->minheight = 1;
+            root->maxheight = 1;
+        } else {
+            node* temp = findlastpush(root);
+            if (temp->left == NULL){
+                temp->left = new node;
+                temp->left->data = new_data;
+                temp->left->priv = temp;
+                temp->left->left = NULL;
+                temp->left->right = NULL;
+                temp->left->minheight = 1;
+                temp->left->maxheight = 1;
+                temp = temp->left;
+            } else {
+                temp->right = new node;
+                temp->right->data = new_data;
+                temp->right->priv = temp;
+                temp->right->left = NULL;
+                temp->right->right = NULL;
+                temp->right->minheight = 1;
+                temp->right->maxheight = 1;
+                temp = temp->right;
+            }
+            Sort(temp);
+            fix_the_heights(temp);
+
+        }
+    }
+
+    node* findlastpop(node* temp){
+        while ((temp->left != NULL) && (temp->right != NULL)){
+            if (balfactormax(temp) == 0 && balfactormin(temp) == 0)
+                temp = temp->right;
+            else if (balfactormax(temp) == 0 && balfactormin(temp) == 1)
+                temp = temp->right;
+            else if (balfactormax(temp) == 1 && balfactormin(temp) == 0)
+                temp = temp->left;
+            else if (balfactormax(temp) == 1 && balfactormin(temp) == 1)
+                temp = temp->left;
+            }
+        return temp;
+    }
+
+    void SitRo(node* temp){
+        while (temp -> left && temp -> right){
+            if (temp -> right -> data <= temp -> left -> data){
+                swap (temp -> data, temp -> left -> data);
+                temp = temp -> left;
+            } else {
+                swap (temp -> data, temp -> right -> data);
+                temp = temp -> right;
+            }
+        }
+    }
+
+    void pop(){
+        node* temp = root;
+        if (root != NULL){
+            temp = findlastpop(temp);
+            if (temp == root){
+                root = NULL;
+            } else if (temp->right != NULL){
+                root->data = temp->right->data;
+                temp->right->priv = NULL;
+                temp->right = NULL;
+                fix_the_heights(temp);
+                SitRo(root);
+            }  else if (temp->left != NULL){
+                root->data = temp->left->data;
+                temp->left->priv = NULL;
+                temp->left = NULL;
+                fix_the_heights(temp);
+                SitRo(root);
+            } else if (temp->left == NULL && temp->right == NULL){
+                root->data = temp->data;
+                if (temp->priv->data == temp->priv->left->data){
+                    temp->priv->left = NULL;
+                } else {
+                    temp->priv->right = NULL;
+                }
+                fix_the_heights(temp->priv);
+                temp->priv = NULL;
+                SitRo(root);
+            }
+        }
+    }
+
+    void update(int k){
+        root -> data = k;
+        SitRo(root);
+    }
+
+    int findmax(){
+        if (root != NULL){
+            cout << "Max. el. is: " << root -> data << endl;
+            return (root -> data);
+        }
+    }
+
+    void print(){
+                cout << "Your heap-tree is: "<< endl;
+                pprint(root);
+    }
+
+    void pprint(node* temp){
+        if (root == NULL) cout << " really?";
+        else {
+            if (temp == root)
+                cout << "root: " << temp -> data << endl;
+            else
+                cout << temp -> data << endl;
+            if(temp -> left != NULL){
+                cout << "left: ";
+                pprint(temp -> left);
+            } else
+                cout << "left: 0" << endl;
+            if(temp -> right != NULL){
+                cout << "right: ";
+                pprint(temp -> right);
+            }
+            else cout << "right: 0"<< endl;
+        }
+    }
+
+    void merge (heap &A, heap &B){
+        mmerger(A, B, B.root);
+    }
+
+    void mmerger(heap &A, heap &B, node* temp){
+        A.add(temp -> data);
+        if (temp -> right != NULL){
+            mmerger (A, B, temp -> right);
+        }
+        if (temp -> left != NULL){
+            mmerger (A, B, temp -> left);
+        }
+    }
+
+};
+
+void Sort(int *Array, int size_array){
+    heap A;
+    for (int i = 0; i < size_array; i++){
+        A.add(Array[i]);
+    }
+    for (int i = size_array - 1; i > 0; i--){
+        Array[i] = A.findmax();
+        A.pop();
+    }
+}
+
+int main(){
+    int k;
+    cin >> k;
+    int A[k];
+    heap B;
+    for(int i = 0; i < k; i++) {
+        cout << "Введите элемент " << i+1 << ": ";
+        cin >> A[i];
+    }
+    Sort(A, k);
+    for(int i = 0; i < k; i++){
+        cout << A[i] << " ";
+    }
+    return 0;
+}
