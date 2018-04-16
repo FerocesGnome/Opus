@@ -14,12 +14,12 @@ bool cmp (pt a, pt b){
 
 /* для проверки правого поворота */
 bool cw (pt a, pt b, pt c){
-    return ((b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x) < 0);
+    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
 }
 
 /* для проверки левого поворота */
 bool ccw (pt a, pt b, pt c){
-    return ((b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x) > 0);
+    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
 }
 
 void convex_hull(vector<pt>& a){
@@ -37,14 +37,14 @@ void convex_hull(vector<pt>& a){
 
         /* добавляем точки, входящие в МВО и лежащие выше прямой FE */
         if (i == a.size() - 1 || cw(p1, a[i], p2)){
-            while (up.size() >= 2 && cw(up[up.size()-2], up[up.size()-1], a[i]) == 0)
+            while (up.size() >= 2 && !cw(up[up.size()-2], up[up.size()-1], a[i]))
                 up.pop_back();
             up.push_back(a[i]);
         }
 
         /* добавляем точки, входящие в МВО и лежащие ниже прямой FE */
         if (i == a.size() - 1 || ccw(p1, a[i], p2)){
-            while (down.size() >= 2 && ccw(down[down.size()-2], down[down.size()-1], a[i]) == 0)
+            while (down.size() >= 2 && !ccw(down[down.size()-2], down[down.size()-1], a[i]))
                 down.pop_back();
             down.push_back(a[i]);
         }
@@ -54,16 +54,14 @@ void convex_hull(vector<pt>& a){
     a.clear();
 
     /* добавляем "верхние" точки */
-    for (size_t i = 0; i < up.size(); i++){
+    for (size_t i = 0; i < up.size(); ++i)
         if (up[i].x != up[i-1].x || up[i].y != up[i-1].y)
         a.push_back(up[i]);
-    }
 
     /* добавляем "нижние" точки */
-    for (size_t i = down.size() - 2; i > 0; i--){
+    for (size_t i = down.size() - 2; i > 0; --i)
         if (down[i].x != down[i-1].x || down[i].y != down[i-1].y)
         a.push_back(down[i]);
-    }
 }
 
 typedef vector<pt> vec_point;
@@ -84,8 +82,9 @@ int main(){
 
     /* Вывод результата */
     int t = a.size();
+    cout << "The points in Convex Hull are:\n";
     for (int i = 0; i < t; i++){
-        cout << "(" << a[i].x << "," << a[i].y << ")" << endl;
+        cout << "(" << a[i].x << "; " << a[i].y << ")\n";
     }
     return 0;
 }
