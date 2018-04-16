@@ -2,44 +2,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Point
-{
-    int x, y;
-};
+/* множество Pair - пары целых чисел */
+#define Pair pair<double, double>
+
+/* Сохраняет результаты (точки МВО) */
+set <Pair> hull;
 
 /* Найти ориентацию упорядоченного триплета (p, q, r). */
 /* Функция возвращает следующие значения */
 /* 0 -> p, q и r коллинеарны */
 /* 1 -> ориентация по часовой стрелке */
 /* 2 -> ориентация против часовой стрелки */
-int orientation(Point p, Point q, Point r)
+double orientation(Pair p, Pair q, Pair r)
 {
-    int val = (q.y - p.y) * (r.x - q.x) -
-              (q.x - p.x) * (r.y - q.y);
+    double val = (q.second - p.second) * (r.first - q.first) -
+              (q.first - p.first) * (r.second - q.second);
 
     if (val == 0) return 0;  /* коллинеарны */
     return (val > 0)? 1: 2; /* по или против часовой стрелки */
 }
 
 /* Печатает выпуклую оболочку множества из n точек. */
-void convexHull(vector<Point>& A)
+void convexHull(Pair A[], int n)
 {
-    int n = A.size();
-
-    /* инициализация вектора результатов */
-    vector<Point> hull;
+    /* если точек нет - оболочки тоже нет */
     if (n == 0) return;
-    /* Если точек меньше трёх */
-    if (n < 3){
-        for (int i = 0; i < n; i++)
-            hull.push_back(A[i]);;
-    } else {
 
+    /* если точка одна - в МВО тоже будет только эта точка */
+    if (n == 1)
+    {
+        hull.insert(A[0]);
+    }
+
+    /* если точка две - в МВО также будут только они,
+    если они совпадаю, точка будет только одна */
+    if (n == 2)
+    {
+        hull.insert(A[0]);
+        if (A[0].first != A[1].first || A[0].second != A[1].second)
+        hull.insert(A[1]);
+    }
+
+    /* a [i].second -> y - координата i - й точки */
 
         /* Находим самую левую точку */
         int l = 0;
         for (int i = 1; i < n; i++)
-            if (A[i].x < A[l].x || (A[i].x == A[l].x && A[i].y < A[l].y))
+            if (A[i].first < A[l].first || (A[i].first == A[l].first && A[i].second < A[l].second))
                 l = i;
 
             /* Начнем с самой левой точки, продолжаем движение против часовой стрелки
@@ -49,7 +58,7 @@ void convexHull(vector<Point>& A)
         do
         {
             /* Добавляем точку в вектор */
-            hull.push_back(A[p]);
+            hull.insert(A[p]);
 
 
             /* Ищем точку «q», такую, чтобы ориентация (p, x, q)
@@ -70,31 +79,27 @@ void convexHull(vector<Point>& A)
 
         } while (p != l);  /* Пока не дойдём до первой точки */
 
-    }
-
     /* Вывод результата */
-    for (int i = 0; i < hull.size(); i++){
-        if ( hull[i].x != hull[i-1].x || hull[i].y != hull[i-1].y ){
-            cout << "(" << hull[i].x << ", "
-        << hull[i].y << ")\n";
-        }
-
+    cout << "The points in Convex Hull are:\n";
+    while (!hull.empty())
+    {
+        cout << "(" <<( *hull.begin()).first << "; "
+             << (*hull.begin()).second << ")\n";
+        hull.erase(hull.begin());
     }
 }
-
-typedef vector<Point> points;
 
 /* Драйвер программы для тестирования функций */
 int main()
 {
     int n;
     cin >> n;
-    points A;
+    Pair a[n];
     for (int i = 0; i < n; i++){
-        Point temp;
-        cin >> temp.x >> temp.y;
-        A.push_back(temp);
+        double temp1, temp2;
+        cin >> temp1 >> temp2;
+        a[i] = {temp1, temp2};
     }
-    convexHull(A);
+    convexHull(a, n);
     return 0;
 }
