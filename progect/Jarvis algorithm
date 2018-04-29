@@ -13,13 +13,11 @@ set <Pair> hull;
 /* 0 -> p, q и r коллинеарны */
 /* 1 -> ориентация по часовой стрелке */
 /* 2 -> ориентация против часовой стрелки */
-double orientation(Pair p, Pair q, Pair r)
-{
-    double val = (q.second - p.second) * (r.first - q.first) -
-              (q.first - p.first) * (r.second - q.second);
 
-    if (val == 0) return 0;  /* коллинеарны */
-    return (val > 0)? 1: 2; /* по или против часовой стрелки */
+/* для проверки правого поворота */
+bool cw (Pair p, Pair q, Pair r){
+    return p.first*(q.second-r.second) +
+    q.first*(r.second-p.second)+r.first*(p.second-q.second) < 0;
 }
 
 /* Печатает выпуклую оболочку множества из n точек. */
@@ -66,10 +64,8 @@ void convexHull(Pair A[], int n)
             посещенную точку с значением ориентации 2 в q. Если ориентация какой-либо
             точки «i» вместе с «p» и текущей «q» равна 2 тогда обновляем «q». */
             q = (p+1)%n;
-            for (int i = 0; i < n; i++)
-            {
-                /*Если ориентация «i» вместе с «p» и текущей «q» то обновляем «q» */
-                if (orientation(A[p], A[i], A[q]) == 2)
+            for (int i = 0; i < n; i++){
+                if (cw(A[p], A[q], A[i]))
                     q = i;
             }
 
