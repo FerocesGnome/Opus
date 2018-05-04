@@ -1,5 +1,10 @@
 /* Программа C++ для реализации обхода методом Джарвиса, чтобы найти минимальную выпуклую оболочку. */
-#include <bits/stdc++.h>
+#include <vector>
+#include <stdlib.h>
+#include <time.h>
+#include <iostream>
+#include <vector>
+#include <set>
 using namespace std;
 
 /* множество Pair - пары целых чисел */
@@ -8,94 +13,133 @@ using namespace std;
 /* Сохраняет результаты (точки МВО) */
 set <Pair> hull;
 
+vector <Pair> Anser;
+
 /* Найти ориентацию упорядоченного триплета (p, q, r). */
 /* Функция возвращает следующие значения */
 /* 0 -> p, q и r коллинеарны */
 /* 1 -> ориентация по часовой стрелке */
 /* 2 -> ориентация против часовой стрелки */
 
+/* Возвращает сторону точки p относительно прямой, соединяющей точки p1 и p2. */
+/* Вспомогательная в этой программе функция */
+int findSide(double p1x, double p1y, double px, double py, double p2x, double p2y)
+{
+	double val = (py - p1y) * (p2x - p1x) -
+		(p2y - p1y) * (px - p1x);
+	if (val > 0)
+		return 1;
+	if (val < 0)
+		return -1;
+	return 0;
+}
+
 /* для проверки правого поворота */
-bool cw (Pair p, Pair q, Pair r){
-    return p.first*(q.second-r.second) +
-    q.first*(r.second-p.second)+r.first*(p.second-q.second) < 0;
+bool cw(Pair p, Pair q, Pair r) {
+	return p.first*(q.second - r.second) +
+		q.first*(r.second - p.second) + r.first*(p.second - q.second) < 0;
 }
 
 /* Печатает выпуклую оболочку множества из n точек. */
 void convexHull(Pair A[], int n)
 {
-    /* если точек нет - оболочки тоже нет */
-    if (n == 0) return;
+	/* если точек нет - оболочки тоже нет */
+	if (n == 0) return;
 
-    /* если точка одна - в МВО тоже будет только эта точка */
-    if (n == 1)
-    {
-        hull.insert(A[0]);
-    }
+	/* если точка одна - в МВО тоже будет только эта точка */
+	if (n == 1)
+	{
+		hull.insert(A[0]);
+	}
 
-    /* если точка две - в МВО также будут только они,
-    если они совпадаю, точка будет только одна */
-    if (n == 2)
-    {
-        hull.insert(A[0]);
-        if (A[0].first != A[1].first || A[0].second != A[1].second)
-        hull.insert(A[1]);
-    }
+	/* если точка две - в МВО также будут только они,
+	если они совпадаю, точка будет только одна */
+	if (n == 2)
+	{
+		hull.insert(A[0]);
+		if (A[0].first != A[1].first || A[0].second != A[1].second)
+			hull.insert(A[1]);
+	}
 
-    /* a [i].second -> y - координата i - й точки */
+	/* a [i].second -> y - координата i - й точки */
 
-        /* Находим самую левую точку */
-        int l = 0;
-        for (int i = 1; i < n; i++)
-            if (A[i].first < A[l].first || (A[i].first == A[l].first && A[i].second < A[l].second))
-                l = i;
+	/* Находим самую левую точку */
+	int l = 0;
+	for (int i = 1; i < n; i++)
+		if (A[i].first < A[l].first || (A[i].first == A[l].first && A[i].second < A[l].second))
+			l = i;
 
-            /* Начнем с самой левой точки, продолжаем движение против часовой стрелки
-            пока не дойдем до начальной точки. Этот цикл работает O(h)
-            раз, где h - количество вершин в результате. */
-        int p = l, q;
-        do
-        {
-            /* Добавляем точку в вектор */
-            hull.insert(A[p]);
+	/* Начнем с самой левой точки, продолжаем движение против часовой стрелки
+	пока не дойдем до начальной точки. Этот цикл работает O(h)
+	раз, где h - количество вершин в результате. */
+	int p = l, q;
+	do
+	{
+		/* Добавляем точку в вектор */
+		hull.insert(A[p]);
 
 
-            /* Ищем точку «q», такую, чтобы ориентация (p, x, q)
-            была против часовой стрелки для всех точек 'x'. Идея - хранить последнюю
-            посещенную точку с значением ориентации 2 в q. Если ориентация какой-либо
-            точки «i» вместе с «p» и текущей «q» равна 2 тогда обновляем «q». */
-            q = (p+1)%n;
-            for (int i = 0; i < n; i++){
-                if (cw(A[p], A[q], A[i]))
-                    q = i;
-            }
+		/* Ищем точку «q», такую, чтобы ориентация (p, x, q)
+		была против часовой стрелки для всех точек 'x'. Идея - хранить последнюю
+		посещенную точку с значением ориентации 2 в q. Если ориентация какой-либо
+		точки «i» вместе с «p» и текущей «q» равна 2 тогда обновляем «q». */
+		q = (p + 1) % n;
+		for (int i = 0; i < n; i++) {
+			if (cw(A[p], A[q], A[i]))
+				q = i;
+		}
 
-            /* Теперь q является той следующей после p точкой, входящий в МВО.
-            Устанавливаем p = q для следующей итерации, а q добавляется в вектор результатов */
-            p = q;
+		/* Теперь q является той следующей после p точкой, входящий в МВО.
+		Устанавливаем p = q для следующей итерации, а q добавляется в вектор результатов */
+		p = q;
 
-        } while (p != l);  /* Пока не дойдём до первой точки */
+	} while (p != l);  /* Пока не дойдём до первой точки */
 
-    /* Вывод результата */
-    cout << "The points in Convex Hull are:\n";
-    while (!hull.empty())
-    {
-        cout << "(" <<( *hull.begin()).first << "; "
-             << (*hull.begin()).second << ")\n";
-        hull.erase(hull.begin());
-    }
+					   /* Вывод результата */
+	/* Так как итоговое множество точек сохраняется с помощью set, 
+	а в set все точки сортируются нужно выводить их в правильном порядке*/
+	/* Стоит сказать, что сам алгоритм работает корректно, только set не совсем подходит для данной задачи */
+	cout << "The points in Convex Hull are:\n";
+
+	double Temp1x = (*hull.begin()).first; /* Координаты первой точки */
+	double Temp1y = (*hull.begin()).second;
+	Pair Temp2;
+	for (auto now = hull.begin(); now != hull.end(); now++) {
+		Temp2 = *now; /* Координаты последней точки */
+	}
+
+	while (!hull.empty())
+	{
+		double Tempx = (*hull.begin()).first;
+		double Tempy = (*hull.begin()).second;
+		if (findSide(Temp1x, Temp1y, Tempx, Tempy, Temp2.first, Temp2.second) == 1) {
+			Anser.push_back({ Tempx, Tempy }); /* если точка находится над прямой */
+			hull.erase(hull.begin()); /* её не выводим, но сохраняем в дополнительный вектор */
+		}
+		else {
+			cout << "(" << (*hull.begin()).first << "; " /* если точка находится под прямой */
+				<< (*hull.begin()).second << ")\n"; /* выводим её */
+			hull.erase(hull.begin());
+		}
+	}
+	for (int i = Anser.size() - 1; i >= 0; i--) { /* Выводим собранный вектор задом наперёд */
+		cout << "(" << Anser[i].first << "; "
+			<< Anser[i].second << ")\n";
+	}
+	/* Такой вывод потребует О(n) времени (как обычный вывод) и  О(n) дополнительной памяти*/
 }
 
 /* Драйвер программы для тестирования функций */
 int main()
 {
-    int n;
-    cin >> n;
-    Pair a[n];
-    for (int i = 0; i < n; i++){
-        double temp1, temp2;
-        cin >> temp1 >> temp2;
-        a[i] = {temp1, temp2};
-    }
-    convexHull(a, n);
-    return 0;
+	int n;
+	cin >> n;
+	Pair* a = new Pair[n];
+	for (int i = 0; i < n; i++) {
+		double temp1, temp2;
+		cin >> temp1 >> temp2;
+		a[i] = { temp1, temp2 };
+	}
+	convexHull(a, n);
+	system("pause");
 }
