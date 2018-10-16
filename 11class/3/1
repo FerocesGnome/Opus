@@ -10,7 +10,6 @@ int** G = new int*[V]; //матрица смежности
 
 int main()
 {
-    /*... чтение графа в матрицу смежности ...*/
 
     cin >> V;
     for (int i = 0; i < V; i++)
@@ -44,7 +43,6 @@ int main()
             else
                 bad = true;
         }
-    cout << endl << bad << endl;
 
     if (v1 != -1)
         ++G[v1][v2],  ++G[v2][v1];
@@ -73,8 +71,6 @@ int main()
             --G[i][v];
         }
     }
-
-    cout << "!";
 
     if (v1 != -1)
         for (size_t i=0; i + 1 < res.size(); ++i)
