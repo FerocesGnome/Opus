@@ -1,3 +1,4 @@
+/* Реализация поиска эйлерова цикла в графе */
 #include <iostream>
 #include <vector>
 #include <stack>
