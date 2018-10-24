@@ -28,8 +28,15 @@ void dfs(int v, int p = -1){
             else{
                 dfs(to, v);
                 Fup[v] = min (Fup[v], Fup[to]);
-                if (Fup[to] > Tin[v])
+                if (Fup[to] > Tin[v] && p!= -1)
                     is_bridge(v, to);
+            }
+        }
+    }
+    if (p == -1){
+        for (int i = 0; i < V; i++){
+            if ((G[v][i] != 0) && (i != v)){
+                is_bridge(v, i);
             }
         }
     }
